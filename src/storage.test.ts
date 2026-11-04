@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vite-plus/test";
-import { loadTodos, saveTodos, type TodoStorage } from "./storage.ts";
+import { loadTodos, loadView, saveTodos, saveView, type TodoStorage } from "./storage.ts";
 import type { TodoList } from "./todos.ts";
 
 function memoryStorage(initial: Record<string, string> = {}): TodoStorage {
@@ -47,5 +47,38 @@ describe("loadTodos and saveTodos", () => {
   it("reports a failed save without throwing", () => {
     expect(saveTodos(null, todos)).toBe(false);
     expect(saveTodos({ getItem: () => null, setItem: failing }, todos)).toBe(false);
+  });
+});
+
+describe("loadView and saveView", () => {
+  it.each(["all", "active", "done"] as const)("loads back the saved %s view", (view) => {
+    const storage = memoryStorage();
+    expect(saveView(storage, view)).toBe(true);
+    expect(loadView(storage)).toBe(view);
+  });
+
+  it("keeps the view apart from the saved list", () => {
+    const storage = memoryStorage();
+    saveTodos(storage, todos);
+    saveView(storage, "done");
+    expect(loadTodos(storage)).toEqual(todos);
+  });
+
+  it.each([
+    ["nothing saved", {}],
+    ["an unknown view", { "aidd-todo-demo:view": "later" }],
+    ["an unreadable view", { "aidd-todo-demo:view": '{"view":"done"}' }],
+  ])("loads all from %s", (_case, initial: Record<string, string>) => {
+    expect(loadView(memoryStorage(initial))).toBe("all");
+  });
+
+  it("loads all without storage or when reading throws", () => {
+    expect(loadView(null)).toBe("all");
+    expect(loadView({ getItem: failing, setItem: failing })).toBe("all");
+  });
+
+  it("reports a failed save without throwing", () => {
+    expect(saveView(null, "done")).toBe(false);
+    expect(saveView({ getItem: () => null, setItem: failing }, "done")).toBe(false);
   });
 });

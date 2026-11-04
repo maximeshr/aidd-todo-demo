@@ -60,3 +60,15 @@ body {
 .todo__status {
   color: #b42318;
 }
+
+.todo__views {
+  display: flex;
+  gap: 0.25rem;
+  margin-block-start: 1rem;
+}
+
+.todo__views [aria-pressed="true"] {
+  font-weight: bold;
+  outline: 2px solid currentColor;
+  outline-offset: -2px;
+}

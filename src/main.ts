@@ -1,7 +1,16 @@
 import "./style.css";
 import { browserFrames, createSaveStatus } from "./save-status.ts";
-import { browserStorage, loadTodos, saveTodos } from "./storage.ts";
-import { addTodo, removeTodo, toggleTodo, type Todo, type TodoList } from "./todos.ts";
+import { browserStorage, loadTodos, loadView, saveTodos, saveView } from "./storage.ts";
+import {
+  addTodo,
+  removeTodo,
+  TODO_VIEWS,
+  toggleTodo,
+  visibleTodos,
+  type Todo,
+  type TodoList,
+  type TodoView,
+} from "./todos.ts";
 
 const app = document.querySelector<HTMLDivElement>("#app");
 
@@ -13,6 +22,11 @@ if (app) {
         <input class="todo__input" name="title" aria-label="New todo" placeholder="What needs to be done?" autocomplete="off" />
         <button type="submit">Add</button>
       </form>
+      <div class="todo__views" role="group" aria-label="Show">
+        <button type="button" data-view="all">All</button>
+        <button type="button" data-view="active">Active</button>
+        <button type="button" data-view="done">Done</button>
+      </div>
       <ul class="todo__list"></ul>
       <p class="todo__empty">Nothing to do yet.</p>
       <p class="todo__status" role="status"></p>
@@ -27,10 +41,13 @@ function start(root: HTMLElement): void {
   const list = root.querySelector<HTMLUListElement>(".todo__list");
   const empty = root.querySelector<HTMLParagraphElement>(".todo__empty");
   const status = root.querySelector<HTMLParagraphElement>(".todo__status");
+  const viewButtons = [...root.querySelectorAll<HTMLButtonElement>(".todo__views [data-view]")];
   if (!form || !input || !list || !empty || !status) return;
 
   const storage = browserStorage();
   let todos: TodoList = loadTodos(storage);
+  let view: TodoView = loadView(storage);
+  let visible: TodoList = [];
   const announceSave = createSaveStatus(status, browserFrames);
 
   const update = (next: TodoList): void => {
@@ -39,35 +56,60 @@ function start(root: HTMLElement): void {
     announceSave(saveTodos(storage, todos));
   };
 
+  /** Applies a change to a row, then keeps focus on that row, or on the visible row now at its place once it left the view. */
+  const changeRow = (id: string, change: (todos: TodoList, id: string) => TodoList): void => {
+    const index = visible.findIndex((todo) => todo.id === id);
+    update(change(todos, id));
+    const target =
+      visible.find((todo) => todo.id === id) ?? visible[Math.min(index, visible.length - 1)];
+    if (target) focusTodo(list, target.id);
+    else input.focus();
+  };
+
   const actions: TodoActions = {
-    toggle: (id) => {
-      update(toggleTodo(todos, id));
-      focusTodo(list, id);
-    },
-    remove: (id) => {
-      const index = todos.findIndex((todo) => todo.id === id);
-      update(removeTodo(todos, id));
-      const neighbor = todos[Math.min(index, todos.length - 1)];
-      if (neighbor) focusTodo(list, neighbor.id);
-      else input.focus();
-    },
+    toggle: (id) => changeRow(id, toggleTodo),
+    remove: (id) => changeRow(id, removeTodo),
   };
 
   const render = (): void => {
-    list.replaceChildren(...todos.map((todo) => renderTodo(todo, actions)));
-    empty.hidden = todos.length > 0;
+    visible = visibleTodos(todos, view);
+    list.replaceChildren(...visible.map((todo) => renderTodo(todo, actions)));
+    empty.hidden = visible.length > 0;
+    empty.textContent = todos.length === 0 ? "Nothing to do yet." : EMPTY_VIEW[view];
+    for (const button of viewButtons) {
+      button.setAttribute("aria-pressed", String(button.dataset["view"] === view));
+    }
   };
+
+  /** A view is a display preference: it never saves the todos, and a failed save of the view shows nothing. */
+  const showView = (next: TodoView): void => {
+    view = next;
+    saveView(storage, view);
+    render();
+  };
+
+  for (const button of viewButtons) {
+    const buttonView = TODO_VIEWS.find((candidate) => candidate === button.dataset["view"]);
+    if (buttonView) button.addEventListener("click", () => showView(buttonView));
+  }
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const next = addTodo(todos, input.value);
     if (next === todos) return;
+    if (view === "done") showView("all");
     update(next);
     input.value = "";
   });
 
   render();
 }
+
+const EMPTY_VIEW: Record<TodoView, string> = {
+  all: "Nothing to do yet.",
+  active: "No active todos.",
+  done: "No done todos.",
+};
 
 /** Rendering replaces the rows, so focus goes back to the checkbox of the todo with this id. */
 function focusTodo(list: HTMLElement, id: string): void {
