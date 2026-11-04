@@ -1,4 +1,5 @@
 import "./style.css";
+import { browserFrames, createSaveStatus } from "./save-status.ts";
 import { browserStorage, loadTodos, saveTodos } from "./storage.ts";
 import { addTodo, removeTodo, toggleTodo, type Todo, type TodoList } from "./todos.ts";
 
@@ -30,11 +31,12 @@ function start(root: HTMLElement): void {
 
   const storage = browserStorage();
   let todos: TodoList = loadTodos(storage);
+  const announceSave = createSaveStatus(status, browserFrames);
 
   const update = (next: TodoList): void => {
     todos = next;
     render();
-    announceSave(status, saveTodos(storage, todos));
+    announceSave(saveTodos(storage, todos));
   };
 
   const actions: TodoActions = {
@@ -65,12 +67,6 @@ function start(root: HTMLElement): void {
   });
 
   render();
-}
-
-/** Shows the not-saved message on failure and clears it on success; a repeated failure is announced again. */
-function announceSave(status: HTMLElement, saved: boolean): void {
-  status.textContent = "";
-  if (!saved) requestAnimationFrame(() => (status.textContent = "The list was not saved."));
 }
 
 /** Rendering replaces the rows, so focus goes back to the checkbox of the todo with this id. */
