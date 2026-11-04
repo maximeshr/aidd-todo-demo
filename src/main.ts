@@ -12,6 +12,13 @@ import {
   type TodoView,
 } from "./todos.ts";
 
+/** Declared before `start` runs, which reads it on the first render. */
+const EMPTY_VIEW: Record<TodoView, string> = {
+  all: "Nothing to do yet.",
+  active: "No active todos.",
+  done: "No done todos.",
+};
+
 const app = document.querySelector<HTMLDivElement>("#app");
 
 if (app) {
@@ -104,12 +111,6 @@ function start(root: HTMLElement): void {
 
   render();
 }
-
-const EMPTY_VIEW: Record<TodoView, string> = {
-  all: "Nothing to do yet.",
-  active: "No active todos.",
-  done: "No done todos.",
-};
 
 /** Rendering replaces the rows, so focus goes back to the checkbox of the todo with this id. */
 function focusTodo(list: HTMLElement, id: string): void {
