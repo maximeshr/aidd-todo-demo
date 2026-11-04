@@ -17,7 +17,6 @@ The root files load every session through the project memory block in each AI co
 Refreshed automatically by the memory hook. Do not edit by hand.
 
 <!-- files:start -->
-
 - [architecture.md](architecture.md)
 - [codebase-map.md](codebase-map.md)
 - [coding-assertions.md](coding-assertions.md)
@@ -26,7 +25,6 @@ Refreshed automatically by the memory hook. Do not edit by hand.
 - [project-brief.md](project-brief.md)
 - [testing.md](testing.md)
 - [vcs.md](vcs.md)
-
 <!-- files:end -->
 
 ## Maintaining it

@@ -24,3 +24,4 @@ How the project is tested: the layers, the tools, and the conventions. Where tes
 - Entry: `vp dev`, then the local URL it prints.
 - Auth: none.
 - State: browser storage only; clear the site data to reset.
+- Evidence: record every browser run as `browser-check.md` beside the plan, with the date, the commit it ran on, and one row per scenario. A review counts an unrecorded run as unverified, and the screen code has no unit coverage.
