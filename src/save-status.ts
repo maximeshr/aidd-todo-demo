@@ -11,8 +11,11 @@ export const browserFrames: FrameScheduler = {
 
 /** Shows the not-saved message on failure and clears it on success; a repeated failure is announced again. */
 export function createSaveStatus(status: Pick<HTMLElement, "textContent">, frames: FrameScheduler) {
+  let pending: number | undefined;
   return (saved: boolean): void => {
+    if (pending !== undefined) frames.cancel(pending);
+    pending = undefined;
     status.textContent = "";
-    if (!saved) frames.request(() => (status.textContent = "The list was not saved."));
+    if (!saved) pending = frames.request(() => (status.textContent = "The list was not saved."));
   };
 }
