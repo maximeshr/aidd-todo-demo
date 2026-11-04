@@ -45,17 +45,18 @@ vp run build      # production build
 
 Check out a tag to see the project exactly as it was after that step: `git switch --detach step-04-plan`.
 
-| Tag                  | AIDD step              | Command                                            | What to look at                                                        |
-| -------------------- | ---------------------- | -------------------------------------------------- | ---------------------------------------------------------------------- |
-| `step-00-bootstrap`  | Project scaffold       | none                                               | The bare project, before any AI                                        |
-| `step-01-memory`     | Project memory         | `/aidd-context:02-project-memory`                  | `aidd_docs/memory/`, the memory block in `CLAUDE.md`                   |
-| `step-02-brainstorm` | Clarify the need       | `/aidd-refine:01-brainstorm`                       | `aidd_docs/tasks/2026_11/2026_11_04_todo-mvp/brainstorm.md`            |
-| `step-03-spec`       | Write the contract     | `/aidd-pm:04-spec`, `/aidd-refine:03-shadow-areas` | `spec.md` and `spec-shadow-report.md`: two commits, draft then refined |
-| `step-04-plan`       | Plan before coding     | `/aidd-dev:01-plan`                                | `plan.md` (Decisions table), `phase-1.md`, `phase-2.md`                |
-| `step-05-implement`  | Implement and validate | `/aidd-dev:02-implement`, `/aidd-dev:03-assert`    | One commit per phase, tests, the quality report                        |
-| `step-06-review`     | Independent review     | `/aidd-dev:05-review`, `/aidd-refine:02-challenge` | `review.md`: verdict, evidence, findings                               |
-| `step-07-learn`      | Capture a lesson       | `/aidd-context:10-learn`                           | A rule or memory change born from the review                           |
-| `step-08-debug`      | Fix a bug              | `/aidd-dev:08-debug`                               | A failing test first, then the fix                                     |
+| Tag                        | AIDD step              | Command                                            | What to look at                                                        |
+| -------------------------- | ---------------------- | -------------------------------------------------- | ---------------------------------------------------------------------- |
+| `step-00-bootstrap`        | Project scaffold       | none                                               | The bare project, before any AI                                        |
+| `step-01-memory`           | Project memory         | `/aidd-context:02-project-memory`                  | `aidd_docs/memory/`, the memory block in `CLAUDE.md`                   |
+| `step-02-brainstorm`       | Clarify the need       | `/aidd-refine:01-brainstorm`                       | `aidd_docs/tasks/2026_11/2026_11_04_todo-mvp/brainstorm.md`            |
+| `step-03-spec`             | Write the contract     | `/aidd-pm:04-spec`, `/aidd-refine:03-shadow-areas` | `spec.md` and `spec-shadow-report.md`: two commits, draft then refined |
+| `step-04-plan`             | Plan before coding     | `/aidd-dev:01-plan`                                | `plan.md` (Decisions table), `phase-1.md`, `phase-2.md`                |
+| `step-05-implement`        | Implement and validate | `/aidd-dev:02-implement`, `/aidd-dev:03-assert`    | One commit per phase, tests, the quality report                        |
+| `step-06-review`           | Independent review     | `/aidd-dev:05-review`, `/aidd-refine:02-challenge` | `review.md`: verdict, evidence, findings                               |
+| `step-07-learn`            | Capture a lesson       | `/aidd-context:10-learn`                           | A rule or memory change born from the review                           |
+| `step-08-debug`            | Fix a bug              | `/aidd-dev:08-debug`                               | A failing test first, then the fix                                     |
+| `step-09-sdlc-interactive` | Full flow, supervised  | `/aidd-orchestrator:01-sdlc interactive`           | A whole feature with three pauses                                      |
 
 ## Contributing
 
