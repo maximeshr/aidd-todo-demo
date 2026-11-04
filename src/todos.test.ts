@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vite-plus/test";
-import { addTodo, removeTodo, toggleTodo, type TodoList } from "./todos.ts";
+import {
+  addTodo,
+  isTodoView,
+  removeTodo,
+  TODO_VIEWS,
+  toggleTodo,
+  visibleTodos,
+  type TodoList,
+} from "./todos.ts";
 
 function sequentialIds() {
   let next = 0;
@@ -58,5 +66,43 @@ describe("toggleTodo and removeTodo", () => {
       { id: "id-3", title: "c", done: false },
     ]);
     expect(three.every((todo) => !todo.done)).toBe(true);
+  });
+});
+
+describe("visibleTodos", () => {
+  const todos: TodoList = [
+    { id: "a", title: "a", done: true },
+    { id: "b", title: "b", done: false },
+    { id: "c", title: "c", done: false },
+    { id: "d", title: "d", done: true },
+  ];
+  const ids = (list: TodoList) => list.map((todo) => todo.id);
+
+  it.each([
+    ["all", ["a", "b", "c", "d"]],
+    ["active", ["b", "c"]],
+    ["done", ["a", "d"]],
+  ] as const)("shows the %s todos in saved order", (view, expected) => {
+    expect(ids(visibleTodos(todos, view))).toEqual(expected);
+  });
+
+  it("returns an empty list when no todo fits the view", () => {
+    expect(visibleTodos(todos.slice(1, 3), "done")).toEqual([]);
+  });
+
+  it("does not mutate its input", () => {
+    const copy = structuredClone(todos);
+    visibleTodos(todos, "active");
+    expect(todos).toEqual(copy);
+  });
+});
+
+describe("isTodoView", () => {
+  it.each(TODO_VIEWS)("accepts the %s view", (view) => {
+    expect(isTodoView(view)).toBe(true);
+  });
+
+  it.each([null, undefined, "", "All", "{not a view", 0, {}])("rejects %j", (value) => {
+    expect(isTodoView(value)).toBe(false);
   });
 });
