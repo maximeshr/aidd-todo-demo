@@ -1,0 +1,33 @@
+catalog:
+  vite: npm:@voidzero-dev/vite-plus-core@1.4.0
+  vite-plus: 1.4.0
+
+overrides:
+  vite@*: "catalog:"
+  # Same Vitest copy as `vp test` (vite-plus 1.4.0 bundles 5.0.5).
+  vitest@*: "5.0.5"
+
+peerDependencyRules:
+  allowAny:
+    - vite
+  allowedVersions:
+    vite: "*"
+
+allowBuilds:
+  # quality-gate's `prepare` only installs its own git hooks: never run it here.
+  quality-gate: false
+
+# Supply-chain cooldown: resolve only versions published at least 14 days ago (in minutes).
+minimumReleaseAge: 20160
+minimumReleaseAgeExclude:
+  # Vite+ 1.4.0 (2026-10-23): fixes RUSTSEC-2026-0382/0383/0384. Ages out on 2026-11-06.
+  - vite-plus@1.4.0
+  - "@voidzero-dev/vite-plus-core@1.4.0"
+  - "@voidzero-dev/vite-plus-darwin-arm64@1.4.0"
+  - "@voidzero-dev/vite-plus-darwin-x64@1.4.0"
+  - "@voidzero-dev/vite-plus-linux-arm64-gnu@1.4.0"
+  - "@voidzero-dev/vite-plus-linux-arm64-musl@1.4.0"
+  - "@voidzero-dev/vite-plus-linux-x64-gnu@1.4.0"
+  - "@voidzero-dev/vite-plus-linux-x64-musl@1.4.0"
+  - "@voidzero-dev/vite-plus-win32-arm64-msvc@1.4.0"
+  - "@voidzero-dev/vite-plus-win32-x64-msvc@1.4.0"

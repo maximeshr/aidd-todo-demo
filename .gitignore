@@ -1,0 +1,7 @@
+node_modules
+dist
+coverage
+quality-report.md
+*.log
+*.local
+.DS_Store

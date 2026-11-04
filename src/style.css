@@ -1,0 +1,21 @@
+:root {
+  color-scheme: light dark;
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+body {
+  margin: 0;
+  display: grid;
+  place-items: start center;
+  min-height: 100vh;
+}
+
+.todo {
+  width: min(32rem, 100% - 2rem);
+  padding-block: 3rem;
+}
+
+.todo__empty {
+  color: GrayText;
+}

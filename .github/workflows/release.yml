@@ -1,0 +1,32 @@
+name: Release
+
+# Shared OKQ release flow (https://github.com/maximeshr/quality-gate):
+# - push to canary: open or update the canary -> main release pull request;
+# - push to main: version, CHANGELOG, tag, GitHub release. Nothing is published to npm.
+on:
+  push:
+    branches: [canary, main]
+
+concurrency: release-${{ github.ref }}
+
+permissions:
+  contents: read
+
+jobs:
+  release-pr:
+    if: github.ref_name == 'canary'
+    uses: maximeshr/quality-gate/.github/workflows/reusable-release-pr.yml@v0.5.0
+    permissions:
+      contents: read
+      pull-requests: write
+  release:
+    if: github.ref_name == 'main'
+    uses: maximeshr/quality-gate/.github/workflows/reusable-release.yml@v0.5.0
+    permissions:
+      contents: write
+      pull-requests: write
+      id-token: write
+    with:
+      publish: false
+    secrets:
+      RELEASE_DEPLOY_KEY: ${{ secrets.RELEASE_DEPLOY_KEY }}
