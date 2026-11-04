@@ -10,7 +10,7 @@ The user removes every done todo at once with one button, and the remaining todo
 - The button is shown only while at least one todo is done, whatever the current view.
 - No confirmation step, as for deleting a single todo.
 - After clearing, focus goes to the new todo input, since the button disappears.
-- After clearing, the current view stays as it was and shows its own empty message when it has nothing left.
+- After clearing, the current view stays as it was. When it has nothing left, it shows its own empty message, or "Nothing to do yet." when the whole list is now empty, as the filter feature already does.
 - A failed save after clearing shows the existing not-saved message, and the cleared list stays on screen.
 
 ## Non-goals
@@ -23,7 +23,7 @@ The user removes every done todo at once with one button, and the remaining todo
 
 - With `a` (done), `b`, `c` (done), `d`: clicking "Clear done" leaves `b`, `d` in that order, and a reload shows the same.
 - With no done todo, no "Clear done" button is shown; ticking one shows it.
-- In the "Done" view, clearing shows that view's empty message and moves focus to the input.
+- In the "Done" view with `a` (done) and `b`, clearing shows "No done todos." and moves focus to the input; with only done todos, clearing shows "Nothing to do yet.".
 - With saving made to fail, clearing still removes the done todos on screen and the not-saved message appears.
 
 ## Open Questions
