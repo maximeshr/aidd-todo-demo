@@ -55,6 +55,7 @@ Check out a tag to see the project exactly as it was after that step: `git switc
 | `step-05-implement`  | Implement and validate | `/aidd-dev:02-implement`, `/aidd-dev:03-assert`    | One commit per phase, tests, the quality report                        |
 | `step-06-review`     | Independent review     | `/aidd-dev:05-review`, `/aidd-refine:02-challenge` | `review.md`: verdict, evidence, findings                               |
 | `step-07-learn`      | Capture a lesson       | `/aidd-context:10-learn`                           | A rule or memory change born from the review                           |
+| `step-08-debug`      | Fix a bug              | `/aidd-dev:08-debug`                               | A failing test first, then the fix                                     |
 
 ## Contributing
 
