@@ -31,6 +31,11 @@ export function removeTodo(todos: TodoList, id: string): TodoList {
   return todos.filter((todo) => todo.id !== id);
 }
 
+/** Removes every done todo, keeping the active ones in order; with no done todo, returns the same list. */
+export function clearDone(todos: TodoList): TodoList {
+  return todos.some((todo) => todo.done) ? todos.filter((todo) => !todo.done) : todos;
+}
+
 /** Every view, in display order; the single source of the `TodoView` names and of the view buttons. */
 export const TODO_VIEWS = ["all", "active", "done"] as const;
 
