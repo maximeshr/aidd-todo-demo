@@ -31,10 +31,11 @@ export function removeTodo(todos: TodoList, id: string): TodoList {
   return todos.filter((todo) => todo.id !== id);
 }
 
-/** The todos the user chose to see: every todo, only the active ones, or only the done ones. */
-export type TodoView = "all" | "active" | "done";
+/** Every view, in display order; the single source of the `TodoView` names. */
+export const TODO_VIEWS = ["all", "active", "done"] as const;
 
-export const TODO_VIEWS: readonly TodoView[] = ["all", "active", "done"];
+/** The todos the user chose to see: every todo, only the active ones, or only the done ones. */
+export type TodoView = (typeof TODO_VIEWS)[number];
 
 /** The todos shown in this view, in their saved order. */
 export function visibleTodos(todos: TodoList, view: TodoView): TodoList {
