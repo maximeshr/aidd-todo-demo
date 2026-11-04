@@ -3,6 +3,7 @@ import { browserFrames, createSaveStatus } from "./save-status.ts";
 import { browserStorage, loadTodos, loadView, saveTodos, saveView } from "./storage.ts";
 import {
   addTodo,
+  isTodoView,
   removeTodo,
   TODO_VIEWS,
   toggleTodo,
@@ -11,6 +12,13 @@ import {
   type TodoList,
   type TodoView,
 } from "./todos.ts";
+
+/** The label of each view's button. */
+const VIEW_LABEL: Record<TodoView, string> = {
+  all: "All",
+  active: "Active",
+  done: "Done",
+};
 
 /** Declared before `start` runs, which reads it on the first render. */
 const EMPTY_VIEW: Record<TodoView, string> = {
@@ -30,9 +38,7 @@ if (app) {
         <button type="submit">Add</button>
       </form>
       <div class="todo__views" role="group" aria-label="Show">
-        <button type="button" data-view="all">All</button>
-        <button type="button" data-view="active">Active</button>
-        <button type="button" data-view="done">Done</button>
+        ${TODO_VIEWS.map((view) => `<button type="button" data-view="${view}">${VIEW_LABEL[view]}</button>`).join("")}
       </div>
       <ul class="todo__list"></ul>
       <p class="todo__empty"></p>
@@ -96,8 +102,8 @@ function start(root: HTMLElement): void {
   };
 
   for (const button of viewButtons) {
-    const buttonView = TODO_VIEWS.find((candidate) => candidate === button.dataset["view"]);
-    if (buttonView) button.addEventListener("click", () => showView(buttonView));
+    const buttonView = button.dataset["view"];
+    if (isTodoView(buttonView)) button.addEventListener("click", () => showView(buttonView));
   }
 
   form.addEventListener("submit", (event) => {

@@ -1,4 +1,4 @@
-import { TODO_VIEWS, type Todo, type TodoList, type TodoView } from "./todos.ts";
+import { isTodoView, type Todo, type TodoList, type TodoView } from "./todos.ts";
 
 /** The part of the Web Storage API the app uses. */
 export type TodoStorage = Pick<Storage, "getItem" | "setItem">;
@@ -42,7 +42,7 @@ export function saveTodos(storage: TodoStorage | null, todos: TodoList): boolean
 export function loadView(storage: TodoStorage | null): TodoView {
   try {
     const raw = storage?.getItem(VIEW_KEY);
-    return TODO_VIEWS.find((view) => view === raw) ?? "all";
+    return isTodoView(raw) ? raw : "all";
   } catch {
     return "all";
   }

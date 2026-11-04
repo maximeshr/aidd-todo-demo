@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vite-plus/test";
-import { addTodo, removeTodo, toggleTodo, visibleTodos, type TodoList } from "./todos.ts";
+import {
+  addTodo,
+  isTodoView,
+  removeTodo,
+  TODO_VIEWS,
+  toggleTodo,
+  visibleTodos,
+  type TodoList,
+} from "./todos.ts";
 
 function sequentialIds() {
   let next = 0;
@@ -86,5 +94,15 @@ describe("visibleTodos", () => {
     const copy = structuredClone(todos);
     visibleTodos(todos, "active");
     expect(todos).toEqual(copy);
+  });
+});
+
+describe("isTodoView", () => {
+  it.each(TODO_VIEWS)("accepts the %s view", (view) => {
+    expect(isTodoView(view)).toBe(true);
+  });
+
+  it.each([null, undefined, "", "All", "{not a view", 0, {}])("rejects %j", (value) => {
+    expect(isTodoView(value)).toBe(false);
   });
 });
