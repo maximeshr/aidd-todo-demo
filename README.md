@@ -57,6 +57,7 @@ Check out a tag to see the project exactly as it was after that step: `git switc
 | `step-07-learn`            | Capture a lesson       | `/aidd-context:10-learn`                           | A rule or memory change born from the review                           |
 | `step-08-debug`            | Fix a bug              | `/aidd-dev:08-debug`                               | A failing test first, then the fix                                     |
 | `step-09-sdlc-interactive` | Full flow, supervised  | `/aidd-orchestrator:01-sdlc interactive`           | A whole feature with three pauses                                      |
+| `step-10-sdlc-auto`        | Full flow, autonomous  | `/aidd-orchestrator:01-sdlc`                       | A whole feature with no pause                                          |
 
 ## Contributing
 
