@@ -1,6 +1,6 @@
 ---
 objective: "The user switches the todo list between All, Active and Done, the current view survives a reload, and no view ever changes the saved todos."
-status: pending
+status: implemented
 ---
 
 # Plan: Filter the todo list
