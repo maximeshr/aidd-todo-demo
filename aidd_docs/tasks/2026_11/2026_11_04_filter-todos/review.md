@@ -1,6 +1,6 @@
 # Review: Filter the todo list
 
-- Rounds: 2
+- Rounds: 3
 - Started: 2026-11-04
 
 ## Round 1 · r-7c3e
@@ -100,3 +100,47 @@ My confidence level of correctness now: 85%
 - Either render the view buttons from `TODO_VIEWS`, or narrow its comment. Share one `toTodoView` parse between `main.ts` and `storage.ts`.
 - The `0.25rem` gap equals the ring's offset plus its width, so a focused button's ring touches its neighbors' borders. It is still visible, but `0.5rem` would separate them.
 - From round 1, still open and outside this round's fixes: `main.ts` has 0 % unit coverage, so focus behavior is guarded by browser runs alone.
+
+## Round 3 · r-4bd2
+
+- Date: 2026-11-04
+- By: Maxime Sahroui
+- Diff: `canary...feat/filter-todos`
+- Axes: code, functional, relevancy
+- Verdict: approve
+- Score: 4/7 met, 0 unmet, 3 unverified at runtime, 0 out of the diff
+
+### Criteria
+
+- [x] `visibleTodos` returns all, only not-done, or only done todos, in saved order — `src/todos.ts:46-49`, `src/todos.test.ts:64-89`
+- [x] A saved view loads back; missing, unknown, unreadable or throwing storage loads `all`; a throwing save returns failure — `src/storage.ts:42-54`, guarded by `isTodoView` (`src/todos.ts:41-43`, `src/todos.test.ts:100-108`), `src/storage.test.ts:53-83`
+- [x] Switching views leaves the saved todos unchanged — `src/main.ts:98-102`: `showView` writes only the view key and never calls `saveTodos`
+- [x] `browser-check.md` records every Test Scope row on the validated commit; a `minor` changeset exists — `browser-check.md` rows 0-11 and teardown on `33b1201`, the last commit touching `src/`; `git diff --stat 33b1201 9b224dc` lists `browser-check.md` alone; `.changeset/filter-todos.md:2`
+- Unverified at runtime: each button shows its view and is the only one pressed; an empty view names itself; adding in Done switches to All; ticking in Active removes the row and focus stays in the list — `browser-check.md` rows 1, 5-7 pass on `33b1201`, not on the reviewed head `9b224dc` (code identical, the head adds only the record itself)
+- Unverified at runtime: choosing Done then reloading reopens Done with todos unchanged — same: row 10, recorded on `33b1201`
+- Unverified at runtime: deleting in a filtered view removes the todo and focus lands on a visible row or the input — same: row 8, recorded on `33b1201`
+
+## Challenge (round 3)
+
+My confidence level of correctness now: 90%
+
+# Correctness (100%)
+
+- Round 2 minor, the bold pressed label shifting its neighbors (`src/style.css:71`): fixed in `33b1201`, `font-weight` is gone. Measured on `9b224dc` with `vp dev --port 5197`, in Chromium, across All, Active, Done, All, Done, Active by click and Done by keyboard: All stays at left `643.64` width `30.82`, Active `682.46` + `52.30`, Done `742.77` + `47.87` px, every label at weight 400, gap 8 px. The figures match `browser-check.md` row 4.
+- Round 2 minor, `TODO_VIEWS` claiming a display order the buttons did not read (`src/todos.ts:34`): fixed in `33b1201`. `src/main.ts:41` renders the buttons from `TODO_VIEWS` with the `VIEW_LABEL` map, and the DOM reads All/`all`, Active/`active`, Done/`done` in that order. The comment now holds.
+- Round 2 minor, the string-to-view check written twice (`src/main.ts:99`, `src/storage.ts:45`): fixed in `33b1201`. One `isTodoView` type guard in `src/todos.ts:41-43`, used by `storage.ts:45` and `main.ts:106`, with unit tests for each view and seven non-views.
+- Round 2 suggestions: the `0.25rem` gap is now `0.5rem`, and the Test Scope was rerun keyboard-first and recorded on `33b1201` with rows for the focus ring (2), the pressed state (3) and stable buttons (4).
+- Pressed state distinct and focus ring visible, spot-checked: the pressed button computes a `solid` border and a 15 % tint, the others `outset` and `rgb(239, 239, 239)`. Tabbing from the input reaches the pressed Active, then the unpressed Done: each computes `outline: solid 2px`, offset `2px`, while focused and `:focus-visible`, and `none` otherwise. The viewport screenshot shows the ring outside the pressed border, clear of the next button. Enter on Done presses it and keeps focus and the ring on it. Done survived a reload. The console held no error or warning. The teardown left storage empty and "Nothing to do yet.".
+- Gates on `9b224dc`: `vp check --deny-warnings` clean (53 files formatted, 8 linted), `vp test --coverage` 44/44 passing in 3 files, `quality-gate deadcode` exit 0, `quality-gate duplication` 0 clones, `vp run build` builds (4.21 kB JS).
+- Checklist: no duplication left (one view list, one guard, the empty text once); no contradiction between comments and code; nothing speculative; no debug leftovers.
+
+# Deal breakers
+
+- None.
+
+# Suggestions (enhancements only)
+
+- `src/main.ts:104-107` reads each button's `data-view` back from the DOM and re-checks it with `isTodoView`, though `main.ts:41` built those buttons from `TODO_VIEWS` a few lines earlier. Creating the buttons with `document.createElement` inside one loop over `TODO_VIEWS` would bind each to its view directly and remove the round trip. This is optional.
+- `src/style.css:2` declares `color-scheme: light dark`, and the pressed mark and the ring rely on `currentColor`. `browser-check.md` lists the dark scheme as not covered, and this round did not run it either. One dark-scheme screenshot would close that gap.
+- The rule "a run on another head is unverified" can never be met for the head that records the run, because the record is committed after the run. Here the run on `33b1201` covers every line of code on `9b224dc`. Consider letting a run count when the only later changes are the record itself.
+- Known, outside this feature's contract: `main.ts` has 0 % unit coverage (allowed by `testing.md`), and the page layout is narrow on `canary` too.
