@@ -7,7 +7,5 @@ export default defineConfig({
   test: {
     ...qualityGate.test,
     include: ["src/**/*.test.ts"],
-    // The scaffold has no logic to test yet; the first feature brings the first tests.
-    passWithNoTests: true,
   },
 });

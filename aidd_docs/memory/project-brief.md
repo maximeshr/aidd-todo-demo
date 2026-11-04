@@ -20,4 +20,5 @@ What this project is, the problem it solves, and its domain language. The non-de
 
 ## Key features
 
-- An app shell that renders the list area. Todo features arrive step by step.
+- Add, complete, un-complete and delete todos; the list survives a reload in the same browser.
+- A visible message when the list cannot be saved.

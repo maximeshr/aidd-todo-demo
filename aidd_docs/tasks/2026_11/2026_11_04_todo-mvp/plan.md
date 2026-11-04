@@ -1,6 +1,6 @@
 ---
 objective: "A single user can add, complete, un-complete and delete todos in the browser, and finds the same list after a reload, as the locked spec states."
-status: pending
+status: implemented
 ---
 
 # Plan: Todo list MVP
