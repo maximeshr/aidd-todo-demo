@@ -35,7 +35,7 @@ if (app) {
         <button type="button" data-view="done">Done</button>
       </div>
       <ul class="todo__list"></ul>
-      <p class="todo__empty">Nothing to do yet.</p>
+      <p class="todo__empty"></p>
       <p class="todo__status" role="status"></p>
     </main>
   `;
@@ -82,7 +82,7 @@ function start(root: HTMLElement): void {
     visible = visibleTodos(todos, view);
     list.replaceChildren(...visible.map((todo) => renderTodo(todo, actions)));
     empty.hidden = visible.length > 0;
-    empty.textContent = todos.length === 0 ? "Nothing to do yet." : EMPTY_VIEW[view];
+    empty.textContent = EMPTY_VIEW[todos.length === 0 ? "all" : view];
     for (const button of viewButtons) {
       button.setAttribute("aria-pressed", String(button.dataset["view"] === view));
     }
