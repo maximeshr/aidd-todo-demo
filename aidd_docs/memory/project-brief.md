@@ -23,3 +23,4 @@ What this project is, the problem it solves, and its domain language. The non-de
 - Add, complete, un-complete and delete todos; the list survives a reload in the same browser.
 - A visible message when the list cannot be saved.
 - Show all todos, only the active ones, or only the done ones; the chosen view survives a reload in the same browser.
+- Clear every done todo at once; the button shows only while a todo is done.

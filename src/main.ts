@@ -3,6 +3,7 @@ import { browserFrames, createSaveStatus } from "./save-status.ts";
 import { browserStorage, loadTodos, loadView, saveTodos, saveView } from "./storage.ts";
 import {
   addTodo,
+  clearDone,
   isTodoView,
   removeTodo,
   TODO_VIEWS,
@@ -42,6 +43,7 @@ if (app) {
       </div>
       <ul class="todo__list"></ul>
       <p class="todo__empty"></p>
+      <button type="button" class="todo__clear" hidden>Clear done</button>
       <p class="todo__status" role="status"></p>
     </main>
   `;
@@ -54,8 +56,9 @@ function start(root: HTMLElement): void {
   const list = root.querySelector<HTMLUListElement>(".todo__list");
   const empty = root.querySelector<HTMLParagraphElement>(".todo__empty");
   const status = root.querySelector<HTMLParagraphElement>(".todo__status");
+  const clear = root.querySelector<HTMLButtonElement>(".todo__clear");
   const viewButtons = [...root.querySelectorAll<HTMLButtonElement>(".todo__views [data-view]")];
-  if (!form || !input || !list || !empty || !status) return;
+  if (!form || !input || !list || !empty || !status || !clear) return;
 
   const storage = browserStorage();
   let todos: TodoList = loadTodos(storage);
@@ -89,6 +92,7 @@ function start(root: HTMLElement): void {
     list.replaceChildren(...visible.map((todo) => renderTodo(todo, actions)));
     empty.hidden = visible.length > 0;
     empty.textContent = EMPTY_VIEW[todos.length === 0 ? "all" : view];
+    clear.hidden = !todos.some((todo) => todo.done);
     for (const button of viewButtons) {
       button.setAttribute("aria-pressed", String(button.dataset["view"] === view));
     }
@@ -105,6 +109,12 @@ function start(root: HTMLElement): void {
     const buttonView = button.dataset["view"];
     if (isTodoView(buttonView)) button.addEventListener("click", () => showView(buttonView));
   }
+
+  /** The button hides once the done todos are gone, so focus goes to the input. */
+  clear.addEventListener("click", () => {
+    update(clearDone(todos));
+    input.focus();
+  });
 
   form.addEventListener("submit", (event) => {
     event.preventDefault();

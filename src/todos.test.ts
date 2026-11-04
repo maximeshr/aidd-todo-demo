@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vite-plus/test";
 import {
   addTodo,
+  clearDone,
   isTodoView,
   removeTodo,
   TODO_VIEWS,
@@ -93,6 +94,39 @@ describe("visibleTodos", () => {
   it("does not mutate its input", () => {
     const copy = structuredClone(todos);
     visibleTodos(todos, "active");
+    expect(todos).toEqual(copy);
+  });
+});
+
+describe("clearDone", () => {
+  const todos: TodoList = [
+    { id: "a", title: "a", done: true },
+    { id: "b", title: "b", done: false },
+    { id: "c", title: "c", done: true },
+    { id: "d", title: "d", done: false },
+  ];
+
+  it("keeps only the active todos, in saved order and unchanged", () => {
+    expect(clearDone(todos)).toEqual([
+      { id: "b", title: "b", done: false },
+      { id: "d", title: "d", done: false },
+    ]);
+  });
+
+  it("returns an empty list when every todo is done", () => {
+    expect(clearDone(todos.filter((todo) => todo.done))).toEqual([]);
+  });
+
+  it("returns the same list when no todo is done", () => {
+    const active = todos.filter((todo) => !todo.done);
+    const empty: TodoList = [];
+    expect(clearDone(active)).toBe(active);
+    expect(clearDone(empty)).toBe(empty);
+  });
+
+  it("does not mutate its input", () => {
+    const copy = structuredClone(todos);
+    clearDone(todos);
     expect(todos).toEqual(copy);
   });
 });

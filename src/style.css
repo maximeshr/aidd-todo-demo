@@ -72,7 +72,8 @@ body {
   background-color: color-mix(in srgb, currentColor 15%, transparent);
 }
 
-.todo__views button:focus-visible {
+.todo__views button:focus-visible,
+.todo__clear:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 2px;
 }
