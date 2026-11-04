@@ -19,3 +19,44 @@ body {
 .todo__empty {
   color: GrayText;
 }
+
+.todo__form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.todo__input {
+  flex: 1;
+  min-width: 0;
+}
+
+.todo__list {
+  list-style: none;
+  padding: 0;
+}
+
+.todo__item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding-block: 0.25rem;
+}
+
+.todo__item label {
+  display: flex;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.todo__title {
+  overflow-wrap: anywhere;
+}
+
+.todo__item--done .todo__title {
+  text-decoration: line-through;
+}
+
+.todo__status {
+  color: #b42318;
+}
