@@ -1,6 +1,6 @@
 ---
 objective: "One Clear done button, shown only while a todo is done, removes every done todo from the saved list and keeps the rest in order."
-status: pending
+status: implemented
 ---
 
 # Plan: Clear done todos
