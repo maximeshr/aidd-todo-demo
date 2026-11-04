@@ -1,6 +1,6 @@
 # Review: Todo list MVP
 
-- Rounds: 1
+- Rounds: 2
 - Started: 2026-11-04
 
 ## Round 1 · r-8257
@@ -59,3 +59,60 @@ My confidence level of correctness now: 70%
 - Keep the `role="status"` region rendered and set its text on failure, so screen readers announce every failed save (`src/main.ts:17`, `:37`).
 - Guard or replace `crypto.randomUUID` if the app is ever opened outside a secure context (`src/todos.ts:11`).
 - No simplification found: the work is already the smallest shape that meets the plan's decisions.
+
+## Round 2 · r-5139
+
+- Date: 2026-11-04
+- By: Maxime Sahroui
+- Diff: `canary...feat/todo-mvp`
+- Axes: code, functional, relevancy
+- Verdict: approve
+- Score: 11/11 met, 0 unmet, 0 unverified at runtime, 0 out of the diff
+
+### Criteria
+
+- [x] Phase 1 · Three adds, one toggle, one removal leave two todos in their original order with the expected done states — `src/todos.ts:25-31`, `src/todos.test.ts`; `vp test --coverage` on head 4f1e929: 2 files, 17 tests passed, exit 0
+- [x] Phase 1 · Blank or whitespace-only title leaves the list unchanged; `"  buy milk  "` yields `buy milk`; same title twice yields two todos — `src/todos.ts:19-21`, `src/todos.test.ts`
+- [x] Phase 1 · A saved list loads back identical; missing, invalid JSON or malformed data loads as an empty list — `src/storage.ts:24-33`, `src/storage.test.ts`
+- [x] Phase 1 · A storage that throws on write makes the save return failure without throwing — `src/storage.ts:36-44`, `src/storage.test.ts`
+- [x] Phase 1 · A `null` storage or one that throws on read loads an empty list without throwing — `src/storage.ts:26`, `src/storage.test.ts`
+- [x] Phase 1 · `vp test` runs the new tests and `vite.config.ts` no longer sets `passWithNoTests` — `vite.config.ts`; `vp test --coverage` on 4f1e929 exit 0
+- [x] Phase 2 · In the browser, three adds, one tick, one delete and a reload show the two remaining todos in order with the same done states — `browser-check.md` scenario 1 (run on 091a6bf; `git diff 091a6bf 4f1e929` touches only `browser-check.md`, so the code is the same); re-run by this reviewer on 4f1e929 with Playwright Chromium on `vp dev`: after reload `b` done and struck through, `c` not done, in that order
+- [x] Phase 2 · A blank title adds nothing; a title containing `<b>x</b>` shows those characters as text — `browser-check.md` scenarios 2 and 4; re-run on 4f1e929: count unchanged after `"   "`, `<b>x</b>` shown as text with no `<b>` element
+- [x] Phase 2 · With saving made to fail, an added todo still shows and the not-saved message appears — `browser-check.md` scenario 7; re-run on 4f1e929 with a throwing `setItem`: `save me` shown, status reads "The list was not saved.", visible; a second failure clears then resets the text; the next successful save clears it
+- [x] Phase 2 · A done todo is struck through; a 300-character title without spaces wraps and the page has no horizontal scroll — `browser-check.md` scenarios 5 and 6; re-run on 4f1e929 at 800 px: `line-through` when done, `none` after unticking, `scrollWidth <= clientWidth`
+- [x] Phase 2 · `architecture.md` no longer mentions `passWithNoTests`; a `minor` changeset exists with a summary written for a user — `aidd_docs/memory/architecture.md`, `.changeset/todo-list-mvp.md`
+
+### Findings
+
+- `src/main.ts:73` : `announceSave` schedules the failure text in a `requestAnimationFrame` it never cancels, so a failed save followed by a successful one before the next frame leaves "The list was not saved." on screen after the list was saved; reproduced on 4f1e929 (fail then succeed in one task, two frames later the status shows the message while `localStorage` holds the saved list) → keep the pending frame id and `cancelAnimationFrame` it at the top of `announceSave`, or have the callback write the message only when the latest save failed — 🟢 minor, error-handling
+- `src/todos.ts:11` : `crypto.randomUUID` exists only in secure contexts; opened over plain http on a LAN address (`vp dev --host`), every add throws inside the submit handler and nothing appears, with no message → acceptable for the declared local-only target (`deployment.md`); if non-localhost access matters, fall back to a non-crypto id or catch and surface the failure — 🟢 minor, error-handling
+
+Round 1 findings on this head: focus loss after toggle or delete (`src/main.ts:46` then) is fixed, focus returns to the toggled row's checkbox, to the next row's checkbox after a delete, and to the input when the list empties (keyboard run on 4f1e929); the silent status region (`src/main.ts:17` then) is fixed in the DOM, the region stays rendered and its text is cleared then set again on each failure, with a real screen reader still untested (`browser-check.md` says so); `crypto.randomUUID` is still open and accepted as above; the unrecorded browser run is fixed by `browser-check.md`, while `main.ts` keeps 0 % unit coverage, which `testing.md` allows (unit tests cover the DOM-free logic only).
+
+Gates on head 4f1e929, run by the reviewer: `vp check --deny-warnings` exit 0; `vp test --coverage` 17/17 passed, exit 0; `vp exec quality-gate deadcode` exit 0; `vp exec quality-gate duplication` 0 clones, exit 0; `vp run build` exit 0.
+
+## Challenge · round r-5139
+
+Outcome of `/aidd-refine:02-challenge` on the same diff at 4f1e929, against `spec.md` and `plan.md`. It does not change the round's verdict.
+
+My confidence level of correctness now: 88%
+
+# Correctness (100%)
+
+- Every Done-when line of the spec holds in a real browser on the reviewed head, checked twice: by the implementer's `browser-check.md` and independently by this reviewer's Playwright run on 4f1e929. Round 1's deal breaker is closed.
+- The fix stays inside `src/main.ts` (+27 −4): `data-id` on each row, `focusTodo` by id with `CSS.escape`, `announceSave` on an always-rendered `role="status"` region. No user data reaches `innerHTML`; no new dependency, no dead code (deadcode gate exit 0), no duplication (0 clones).
+- The status behavior still matches plan phase 2 task 4: shown after a failed save, cleared after a successful one.
+- The rules, the storage adapter, memory and the changeset are unchanged since round 1 and still match the spec; a fix inside the same unreleased feature needs no second changeset.
+- All five gates pass on 4f1e929.
+
+# Deal breakers
+
+- None.
+
+# Suggestions (enhancements only)
+
+- Cancel the pending frame in `announceSave` so a stale "not saved" message cannot outlive a successful save (`src/main.ts:73`).
+- The screen wiring, now holding focus and announcement logic, is still covered only by manual browser runs; a small DOM-level test of the save-failure and focus paths would catch a regression that the unit suite cannot.
+- Guard `crypto.randomUUID` if the app is ever opened outside a secure context (`src/todos.ts:11`).
+- Not covered by any run: a real screen reader, Firefox and Safari.
