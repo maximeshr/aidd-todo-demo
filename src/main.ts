@@ -14,7 +14,7 @@ if (app) {
       </form>
       <ul class="todo__list"></ul>
       <p class="todo__empty">Nothing to do yet.</p>
-      <p class="todo__status" role="status" hidden>The list was not saved.</p>
+      <p class="todo__status" role="status"></p>
     </main>
   `;
   start(app);
@@ -34,12 +34,21 @@ function start(root: HTMLElement): void {
   const update = (next: TodoList): void => {
     todos = next;
     render();
-    status.hidden = saveTodos(storage, todos);
+    announceSave(status, saveTodos(storage, todos));
   };
 
   const actions: TodoActions = {
-    toggle: (id) => update(toggleTodo(todos, id)),
-    remove: (id) => update(removeTodo(todos, id)),
+    toggle: (id) => {
+      update(toggleTodo(todos, id));
+      focusTodo(list, id);
+    },
+    remove: (id) => {
+      const index = todos.findIndex((todo) => todo.id === id);
+      update(removeTodo(todos, id));
+      const neighbor = todos[Math.min(index, todos.length - 1)];
+      if (neighbor) focusTodo(list, neighbor.id);
+      else input.focus();
+    },
   };
 
   const render = (): void => {
@@ -58,6 +67,19 @@ function start(root: HTMLElement): void {
   render();
 }
 
+/** Shows the not-saved message on failure and clears it on success; a repeated failure is announced again. */
+function announceSave(status: HTMLElement, saved: boolean): void {
+  status.textContent = "";
+  if (!saved) requestAnimationFrame(() => (status.textContent = "The list was not saved."));
+}
+
+/** Rendering replaces the rows, so focus goes back to the checkbox of the todo with this id. */
+function focusTodo(list: HTMLElement, id: string): void {
+  list
+    .querySelector<HTMLInputElement>(`[data-id="${CSS.escape(id)}"] input[type="checkbox"]`)
+    ?.focus();
+}
+
 interface TodoActions {
   toggle(id: string): void;
   remove(id: string): void;
@@ -66,6 +88,7 @@ interface TodoActions {
 function renderTodo(todo: Todo, actions: TodoActions): HTMLLIElement {
   const item = document.createElement("li");
   item.className = todo.done ? "todo__item todo__item--done" : "todo__item";
+  item.dataset["id"] = todo.id;
 
   const label = document.createElement("label");
   const checkbox = document.createElement("input");
