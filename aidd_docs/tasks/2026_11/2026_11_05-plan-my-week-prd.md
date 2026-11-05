@@ -42,6 +42,7 @@ A user cannot tell which todos are due today, and a late todo looks the same as 
 - An active todo is due today when its date is today, and overdue when its date is before today. A done todo is neither, and keeps showing its date.
 - A new view, next to all, active and done, shows every active todo due today or overdue, in the saved order, and no other todo. It is remembered across reloads like the other views.
 - With nothing due today or overdue, the view says so, in words that name it.
+- Adding a todo that the shown view would hide switches to the all view, so the new todo is visible.
 - An overdue todo says "overdue" in words wherever it is shown, not by colour alone.
 - A due date can be changed or removed on an existing todo.
 - Due dates survive a reload in the same browser, like the rest of the list. A saved todo whose due date cannot be read loads without a due date; the rest of the list loads as usual.

@@ -74,3 +74,7 @@ Nine gaps closed, the date's form still open (minor, deliberately left to the sp
 - **PO decision:** same rule as the done view today: adding a todo that the current view would hide switches to the all view, so the new todo is visible.
 
 PRD revised again through `/aidd-pm:03-prd`, approved, saved at the same path.
+
+### Third run (diff mode)
+
+`status: clean`: the new gap is closed; only the minor gap the PO sent to the spec stays open. The report keeps only this run's diff against the second run; the git history holds the first two reports.
