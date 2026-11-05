@@ -10,10 +10,10 @@ The user can give a new todo an optional due date, a calendar day, and sees that
 - A due date is a calendar day, with no time, in the local date of the device: the day shown is the day entered, whatever the device's time zone.
 - A date already past is accepted.
 - A date that is not valid or is incomplete blocks the add: the todo is not added, the typed title and date stay, and the user is told the date is not valid.
-- The due date is saved with the todo as a `YYYY-MM-DD` string next to its title.
 - A todo saved before due dates existed loads without a due date and behaves as today.
 - A saved due date that is not a real calendar day loads as no due date; the todo keeps its title and done state, and the rest of the list loads.
 - A done todo keeps showing its date.
+- A due date reads as weekday, day and month in the browser's language (for example "Fri 7 Nov"), with the year added only when it is not the current year. No relative words such as "Tomorrow".
 
 ## Non-goals
 
@@ -23,8 +23,9 @@ The user can give a new todo an optional due date, a calendar day, and sees that
 
 ## Done-when
 
-- Adding "Call the plumber" with Friday 7 November 2026 shows it with that day in all, active and done views, and again after a reload.
+- Adding "Call the plumber" with Friday 7 November 2026 shows it with that day in the all and active views, in the done view once ticked, and again after a reload.
 - Adding a todo with no date shows no date, as today.
+- Shown during 2026, a todo due on 7 January 2027 shows its year; one due on 7 November 2026 does not.
 - On a device set to a time zone west of UTC, the day shown is the day entered.
 - With an invalid date entered, nothing is added and the user is told; title and date are still typed.
 - A list saved before this change loads complete, every todo without a date.
@@ -32,7 +33,7 @@ The user can give a new todo an optional due date, a calendar day, and sees that
 
 ## Open Questions
 
-- TBD: How does a due date read on screen: a calendar date (which parts: weekday, day, month, year?) or a relative word such as "Tomorrow"?
+None
 
 ## Stakeholders
 
