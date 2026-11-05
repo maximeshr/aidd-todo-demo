@@ -49,3 +49,5 @@ Findings fed in: the storage line (remove), the TBD (PO answer), the two done-wh
 
 - The conflict left by three amigos (F4) is settled by the spec. Every INVEST row passes and no blocking question remains.
 - **PO authorized** the transition `proposed -> ready` and the link to the spec.
+- Applied with `gh issue edit 2`: labels `status:proposed -> status:ready`; a transition comment names the evidence. Read back: labels `story`, `status:ready`.
+- First write used a `spec:` line under `## Relations`. Caught on read-back: the Story skill allows only `source`, `parent`, `depends_on`, `related_to`, `supersedes`, `order`, `estimate`. Rewritten as `related_to`. The skills have no field for "this Story's spec": the link is an ordinary related artifact.
