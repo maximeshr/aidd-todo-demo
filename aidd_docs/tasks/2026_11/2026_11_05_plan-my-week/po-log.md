@@ -66,3 +66,11 @@ First run: [`2026_11_05-plan-my-week-prd-shadow-report.md`](../2026_11_05-plan-m
 | minor: a past date on add                      | Allowed; the todo shows as overdue at once.                                                                                                             |
 | minor: the view when nothing is due            | It says so, in words that name the view, like the other views.                                                                                          |
 | minor: the date's form (calendar or relative)  | **Refused for the PRD.** How a date reads is a design choice for the spec, not a product requirement; it moves to the spec's open questions.            |
+
+### Second run (diff mode)
+
+Nine gaps closed, the date's form still open (minor, deliberately left to the spec), and **one gap newly introduced by the fix itself**: adding a todo that is not due while the new view is shown would make it vanish from sight at once.
+
+- **PO decision:** same rule as the done view today: adding a todo that the current view would hide switches to the all view, so the new todo is visible.
+
+PRD revised again through `/aidd-pm:03-prd`, approved, saved at the same path.

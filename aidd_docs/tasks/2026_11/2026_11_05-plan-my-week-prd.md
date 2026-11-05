@@ -25,6 +25,7 @@ A user cannot tell which todos are due today, and a late todo looks the same as 
 - A calendar, a week grid, or a "due this week" view (open decision in the brief).
 - Sorting the whole list by date, priorities.
 - Sync across browsers or devices.
+- Refreshing the view by itself at midnight while the page stays open: it is right whenever the list is drawn.
 
 ## User Stories
 
@@ -35,12 +36,15 @@ A user cannot tell which todos are due today, and a late todo looks the same as 
 
 ## Acceptance Criteria
 
-- A todo can be added with or without a due date; a todo without one shows no date.
+- "Today" is the local date of the device showing the list. A due date is a calendar day, with no time.
+- A todo can be added with or without a due date, including a date already past; a todo without one shows no date.
 - A todo with a due date shows that date in the list.
-- The due today or overdue view shows every active todo whose date is today or earlier, and no other todo.
-- An overdue todo is marked as overdue wherever it is shown.
+- An active todo is due today when its date is today, and overdue when its date is before today. A done todo is neither, and keeps showing its date.
+- A new view, next to all, active and done, shows every active todo due today or overdue, in the saved order, and no other todo. It is remembered across reloads like the other views.
+- With nothing due today or overdue, the view says so, in words that name it.
+- An overdue todo says "overdue" in words wherever it is shown, not by colour alone.
 - A due date can be changed or removed on an existing todo.
-- Due dates survive a reload in the same browser, like the rest of the list.
+- Due dates survive a reload in the same browser, like the rest of the list. A saved todo whose due date cannot be read loads without a due date; the rest of the list loads as usual.
 
 ## Dependencies
 
@@ -49,5 +53,4 @@ A user cannot tell which todos are due today, and a late todo looks the same as 
 
 ## Open Questions
 
-- What is "today": the day on the user's device clock?
-- Is a todo due today also "overdue" once the day is over, at midnight?
+- How a due date reads on screen (a calendar date, or a relative word such as "Tomorrow"): decided in the spec.
