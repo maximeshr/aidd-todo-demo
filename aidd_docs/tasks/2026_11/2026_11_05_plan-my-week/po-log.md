@@ -49,3 +49,20 @@ Input: the Product Brief.
 - **Skill noted a tension, PO decided:** the PRD template has a "User Stories" section while the skill's own rule says "never user stories". The PO kept the section as one-line needs only, with no acceptance per story: the Stories proper come from `/aidd-pm:02-user-stories` in the next step.
 - Second draft: **PO approved.** Saved at the path the skill fixes: `aidd_docs/tasks/2026_11/2026_11_05-plan-my-week-prd.md`. Note: that is a file beside the month folders, not inside the `2026_11_05_plan-my-week/` task folder, and it uses `-` where the spec skill uses `_`. The PO kept the skill's path rather than bend the skill; the task folder links to it.
 - Read back: eight template sections, no tech stack, data model or code.
+
+## `/aidd-refine:03-shadow-areas` on the PRD
+
+First run: [`2026_11_05-plan-my-week-prd-shadow-report.md`](../2026_11_05-plan-my-week-prd-shadow-report.md), 10 gaps (1 blocker, 6 major, 3 minor). The skill never edits the PRD: the PO answered each probe, then the PRD was revised through `/aidd-pm:03-prd` (draft shown again, approved, saved at the same path).
+
+| Gap                                            | PO decision                                                                                                                                             |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| blocker: is a todo due today already overdue?  | No. Overdue means the due date is before today. Due today and overdue are two states, both in the view.                                                 |
+| major: which day is "today"?                   | The local date of the device showing the list. A due date is a calendar day, never converted between time zones.                                        |
+| major: the view at midnight with the page open | Accepted limitation, written as a Non-Goal: the view is right whenever the list is drawn (opening, reloading, any change). No live refresh at midnight. |
+| major: a done todo past its date               | Never overdue and never in the view; it keeps showing its date.                                                                                         |
+| major: how the view sits with the others       | One more view next to all, active and done, remembered across reloads like them.                                                                        |
+| major: an unreadable saved due date            | That todo loads without a due date; the rest of the list loads as usual. Losing a whole list for one bad date is worse than losing the date.            |
+| major: overdue without colour                  | Overdue is said in words, not by colour alone.                                                                                                          |
+| minor: a past date on add                      | Allowed; the todo shows as overdue at once.                                                                                                             |
+| minor: the view when nothing is due            | It says so, in words that name the view, like the other views.                                                                                          |
+| minor: the date's form (calendar or relative)  | **Refused for the PRD.** How a date reads is a design choice for the spec, not a product requirement; it moves to the spec's open questions.            |
