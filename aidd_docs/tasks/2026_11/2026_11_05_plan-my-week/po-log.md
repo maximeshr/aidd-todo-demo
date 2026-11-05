@@ -38,3 +38,14 @@ Input: "Plan my week: todos with an optional due date, and a way to see what is 
 - Second draft: **PO approved** and authorized persisting it.
 - Written: `aidd_docs/product/plan-my-week.md`, `revision: current`, no relation fields (first brief). Read back: frontmatter `objective` non-empty, every template section present except the empty optional `Product View`.
 - Handoff offered by the skill: the brief is one outcome needing several slices (Epic) and has no requirements yet (PRD). **PO:** PRD first, then the Epic in the next step.
+
+## `/aidd-pm:03-prd`
+
+Input: the Product Brief.
+
+- First draft shown. **PO corrections:**
+  1. The draft's Acceptance Criteria said "the due today or overdue view lists todos sorted by due date, earliest first". Refused as written: sorting is a Non-Goal of the brief for the whole list, and inside the new view the order is a product choice nobody has made yet. **PO decided:** keep the saved order everywhere, as the other views do; the sorting line was removed and "sorting the whole list by date" stayed a Non-Goal.
+  2. The draft had no criterion for changing or removing a date. **PO added** the story and its criterion: a plan changes during the week.
+- **Skill noted a tension, PO decided:** the PRD template has a "User Stories" section while the skill's own rule says "never user stories". The PO kept the section as one-line needs only, with no acceptance per story: the Stories proper come from `/aidd-pm:02-user-stories` in the next step.
+- Second draft: **PO approved.** Saved at the path the skill fixes: `aidd_docs/tasks/2026_11/2026_11_05-plan-my-week-prd.md`. Note: that is a file beside the month folders, not inside the `2026_11_05_plan-my-week/` task folder, and it uses `-` where the spec skill uses `_`. The PO kept the skill's path rather than bend the skill; the task folder links to it.
+- Read back: eight template sections, no tech stack, data model or code.
