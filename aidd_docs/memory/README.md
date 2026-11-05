@@ -18,6 +18,7 @@ Refreshed automatically by the memory hook. Do not edit by hand.
 
 <!-- files:start -->
 - [architecture.md](architecture.md)
+- [backlog.md](backlog.md)
 - [codebase-map.md](codebase-map.md)
 - [coding-assertions.md](coding-assertions.md)
 - [deployment.md](deployment.md)
