@@ -60,6 +60,7 @@ Check out a tag to see the project exactly as it was after that step: `git switc
 | `step-10-sdlc-auto`        | Full flow, autonomous  | `/aidd-orchestrator:01-sdlc`                                                   | A whole feature with no pause                                                                |
 | `step-11-tickets`          | Ticketing tool         | `/aidd-context:02-project-memory refresh`                                      | `aidd_docs/memory/backlog.md`, the issue labels, `2026_11_05_memory-check/po-log.md`         |
 | `step-12-product-brief`    | Frame the product (PO) | `/aidd-pm:06-product-brief`, `/aidd-pm:03-prd`, `/aidd-refine:03-shadow-areas` | `aidd_docs/product/plan-my-week.md`, the PRD and its shadow report (three runs), `po-log.md` |
+| `step-13-epic-stories`     | Epic and Stories (PO)  | `/aidd-pm:07-epic`, `/aidd-pm:02-user-stories`, `/aidd-pm:08-three-amigos`     | Issues #1 to #5 on GitHub, `po-log-backlog.md`, `three-amigos-story-2.md`                    |
 
 ## Contributing
 
