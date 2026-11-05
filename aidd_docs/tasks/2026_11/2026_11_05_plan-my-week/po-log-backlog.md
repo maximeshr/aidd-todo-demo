@@ -63,3 +63,13 @@ Input: the PRD. The backlog was empty (`gh issue list`: no issue), so no match o
 - Dependency: #3, #4, #5 are natively "blocked by" #2 (`.../dependencies/blocked_by` → `[2]` each). Stored once, on the dependent; GitHub derives "blocking" on #2.
 - No estimate, no Markdown copy.
 - Handoff: refine the first Story before it is called ready. **PO:** Three Amigos on #2.
+
+## `/aidd-pm:08-three-amigos` on #2
+
+Full result and decisions: [`three-amigos-story-2.md`](three-amigos-story-2.md). Three lenses, all `revise`; two entailed amendments, three questions, one conflict on impact.
+
+- Amendments F1 (day anchor) and F2 (lists saved before due dates) **accepted**.
+- Questions answered: unreadable date = not a real calendar day, todo kept without its date; invalid date on add = not added, user told.
+- Conflict settled by the PO: #2 stays `proposed` until the spec fixes the date's form.
+- Two proposals **refused**: a browser check in the acceptance (Definition of Done, not Story), and a memory change (implementer's consequence).
+- Applied through the Story owner's revise route: `gh issue edit 2`, body before → after in the git history of this log; labels unchanged (`story`, `status:proposed`). Read back: labels and 8 acceptance lines.
