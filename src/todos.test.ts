@@ -10,7 +10,7 @@ import {
 } from "./todos.ts";
 import type { TodoList } from "./todos.ts";
 
-function sequentialIds() {
+const sequentialIds = () => {
   let next = 0;
 
   return () => {
@@ -18,7 +18,9 @@ function sequentialIds() {
 
     return `id-${next}`;
   };
-}
+};
+
+const ids = (list: TodoList) => list.map((todo) => todo.id);
 
 describe(addTodo, () => {
   it("appends a todo, not done, in insertion order", () => {
@@ -55,10 +57,7 @@ describe(addTodo, () => {
 describe("toggleTodo and removeTodo", () => {
   const createId = sequentialIds();
 
-  const three = ["a", "b", "c"].reduce<TodoList>(
-    (todos, title) => addTodo(todos, title, createId),
-    [],
-  );
+  const three = addTodo(addTodo(addTodo([], "a", createId), "b", createId), "c", createId);
 
   it("marks a todo done and back to not done", () => {
     const done = toggleTodo(three, "id-2");
@@ -83,8 +82,6 @@ describe(visibleTodos, () => {
     { id: "c", title: "c", done: false },
     { id: "d", title: "d", done: true },
   ];
-
-  const ids = (list: TodoList) => list.map((todo) => todo.id);
 
   it.each([
     ["all", ["a", "b", "c", "d"]],

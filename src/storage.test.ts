@@ -3,7 +3,7 @@ import { loadTodos, loadView, saveTodos, saveView } from "./storage.ts";
 import type { TodoStorage } from "./storage.ts";
 import type { TodoList } from "./todos.ts";
 
-function memoryStorage(initial: Record<string, string> = {}): TodoStorage {
+const memoryStorage = (initial: Record<string, string> = {}): TodoStorage => {
   const items = new Map(Object.entries(initial));
 
   return {
@@ -12,7 +12,7 @@ function memoryStorage(initial: Record<string, string> = {}): TodoStorage {
       items.set(key, value);
     },
   };
-}
+};
 
 const failing = (): never => {
   throw new DOMException("storage unavailable", "SecurityError");
