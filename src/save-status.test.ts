@@ -1,25 +1,36 @@
 import { describe, expect, it } from "vite-plus/test";
-import { createSaveStatus, type FrameScheduler } from "./save-status.ts";
+import { createSaveStatus } from "./save-status.ts";
+import type { FrameScheduler } from "./save-status.ts";
 
 function manualFrames() {
   const pending = new Map<number, () => void>();
   let nextId = 0;
+
   const frames: FrameScheduler = {
     request: (callback) => {
-      pending.set(++nextId, callback);
+      nextId += 1;
+      pending.set(nextId, callback);
+
       return nextId;
     },
-    cancel: (id) => void pending.delete(id),
+    cancel: (id) => {
+      pending.delete(id);
+    },
   };
+
   const flush = () => {
     const callbacks = [...pending.values()];
     pending.clear();
-    for (const callback of callbacks) callback();
+
+    for (const callback of callbacks) {
+      callback();
+    }
   };
+
   return { frames, flush };
 }
 
-describe("createSaveStatus", () => {
+describe(createSaveStatus, () => {
   it("shows the message on the next frame after a failed save", () => {
     const status = { textContent: "" };
     const { frames, flush } = manualFrames();

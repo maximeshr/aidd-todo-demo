@@ -1,12 +1,16 @@
 import { describe, expect, it } from "vite-plus/test";
-import { loadTodos, loadView, saveTodos, saveView, type TodoStorage } from "./storage.ts";
+import { loadTodos, loadView, saveTodos, saveView } from "./storage.ts";
+import type { TodoStorage } from "./storage.ts";
 import type { TodoList } from "./todos.ts";
 
 function memoryStorage(initial: Record<string, string> = {}): TodoStorage {
   const items = new Map(Object.entries(initial));
+
   return {
     getItem: (key) => items.get(key) ?? null,
-    setItem: (key, value) => void items.set(key, value),
+    setItem: (key, value) => {
+      items.set(key, value);
+    },
   };
 }
 
@@ -22,12 +26,12 @@ const todos: TodoList = [
 describe("loadTodos and saveTodos", () => {
   it("loads back the saved list", () => {
     const storage = memoryStorage();
-    expect(saveTodos(storage, todos)).toBe(true);
-    expect(loadTodos(storage)).toEqual(todos);
+    expect(saveTodos(storage, todos)).toBeTruthy();
+    expect(loadTodos(storage)).toStrictEqual(todos);
   });
 
   it("loads an empty list when nothing was saved", () => {
-    expect(loadTodos(memoryStorage())).toEqual([]);
+    expect(loadTodos(memoryStorage())).toStrictEqual([]);
   });
 
   it.each([
@@ -36,24 +40,24 @@ describe("loadTodos and saveTodos", () => {
     ["a malformed item", JSON.stringify([{ id: "a", title: "x" }])],
     ["a non-object item", JSON.stringify(["x"])],
   ])("loads an empty list from %s", (_case, raw) => {
-    expect(loadTodos(memoryStorage({ "aidd-todo-demo:todos": raw }))).toEqual([]);
+    expect(loadTodos(memoryStorage({ "aidd-todo-demo:todos": raw }))).toStrictEqual([]);
   });
 
   it("loads an empty list without storage or when reading throws", () => {
-    expect(loadTodos(null)).toEqual([]);
-    expect(loadTodos({ getItem: failing, setItem: failing })).toEqual([]);
+    expect(loadTodos(null)).toStrictEqual([]);
+    expect(loadTodos({ getItem: failing, setItem: failing })).toStrictEqual([]);
   });
 
   it("reports a failed save without throwing", () => {
-    expect(saveTodos(null, todos)).toBe(false);
-    expect(saveTodos({ getItem: () => null, setItem: failing }, todos)).toBe(false);
+    expect(saveTodos(null, todos)).toBeFalsy();
+    expect(saveTodos({ getItem: () => null, setItem: failing }, todos)).toBeFalsy();
   });
 });
 
 describe("loadView and saveView", () => {
   it.each(["all", "active", "done"] as const)("loads back the saved %s view", (view) => {
     const storage = memoryStorage();
-    expect(saveView(storage, view)).toBe(true);
+    expect(saveView(storage, view)).toBeTruthy();
     expect(loadView(storage)).toBe(view);
   });
 
@@ -61,7 +65,7 @@ describe("loadView and saveView", () => {
     const storage = memoryStorage();
     saveTodos(storage, todos);
     saveView(storage, "done");
-    expect(loadTodos(storage)).toEqual(todos);
+    expect(loadTodos(storage)).toStrictEqual(todos);
   });
 
   it.each([
@@ -78,7 +82,7 @@ describe("loadView and saveView", () => {
   });
 
   it("reports a failed save without throwing", () => {
-    expect(saveView(null, "done")).toBe(false);
-    expect(saveView({ getItem: () => null, setItem: failing }, "done")).toBe(false);
+    expect(saveView(null, "done")).toBeFalsy();
+    expect(saveView({ getItem: () => null, setItem: failing }, "done")).toBeFalsy();
   });
 });
