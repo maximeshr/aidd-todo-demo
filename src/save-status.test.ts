@@ -2,14 +2,14 @@ import { describe, expect, it } from "vite-plus/test";
 import { createSaveStatus } from "./save-status.ts";
 import type { FrameScheduler } from "./save-status.ts";
 
-function manualFrames() {
+const manualFrames = () => {
   const pending = new Map<number, () => void>();
   let nextId = 0;
 
   const frames: FrameScheduler = {
-    request: (callback) => {
+    request: (onFrame) => {
       nextId += 1;
-      pending.set(nextId, callback);
+      pending.set(nextId, onFrame);
 
       return nextId;
     },
@@ -19,16 +19,16 @@ function manualFrames() {
   };
 
   const flush = () => {
-    const callbacks = [...pending.values()];
+    const queued = [...pending.values()];
     pending.clear();
 
-    for (const callback of callbacks) {
-      callback();
+    for (const onFrame of queued) {
+      onFrame();
     }
   };
 
   return { frames, flush };
-}
+};
 
 describe(createSaveStatus, () => {
   it("shows the message on the next frame after a failed save", () => {
