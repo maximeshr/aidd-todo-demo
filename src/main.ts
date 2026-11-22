@@ -26,29 +26,49 @@ const EMPTY_VIEW: Record<TodoView, string> = {
   done: "No done todos.",
 };
 
-const app = document.querySelector<HTMLDivElement>("#app");
+/** Rendering replaces the rows, so focus goes back to the checkbox of the todo with this id */
+const focusTodo = (list: HTMLElement, id: string): void => {
+  list
+    .querySelector<HTMLInputElement>(`[data-id="${CSS.escape(id)}"] input[type="checkbox"]`)
+    ?.focus();
+};
 
-if (app) {
-  app.innerHTML = `
-    <main class="todo">
-      <h1>AIDD Todo</h1>
-      <form class="todo__form">
-        <input class="todo__input" name="title" aria-label="New todo" placeholder="What needs to be done?" autocomplete="off" />
-        <button type="submit">Add</button>
-      </form>
-      <div class="todo__views" role="group" aria-label="Show">
-        ${TODO_VIEWS.map((view) => `<button type="button" data-view="${view}">${VIEW_LABEL[view]}</button>`).join("")}
-      </div>
-      <ul class="todo__list"></ul>
-      <p class="todo__empty"></p>
-      <button type="button" class="todo__clear" hidden>Clear done</button>
-      <p class="todo__status" role="status"></p>
-    </main>
-  `;
-  start(app);
+interface TodoActions {
+  toggle: (id: string) => void;
+  remove: (id: string) => void;
 }
 
-function start(root: HTMLElement): void {
+const renderTodo = (todo: Todo, actions: TodoActions): HTMLLIElement => {
+  const item = document.createElement("li");
+  item.className = todo.done ? "todo__item todo__item--done" : "todo__item";
+  item.dataset.id = todo.id;
+
+  const label = document.createElement("label");
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  checkbox.checked = todo.done;
+  checkbox.addEventListener("change", () => {
+    actions.toggle(todo.id);
+  });
+  const title = document.createElement("span");
+  title.className = "todo__title";
+  title.textContent = todo.title;
+  label.append(checkbox, title);
+
+  const remove = document.createElement("button");
+  remove.type = "button";
+  remove.textContent = "×";
+  remove.setAttribute("aria-label", `Delete ${todo.title}`);
+  remove.addEventListener("click", () => {
+    actions.remove(todo.id);
+  });
+
+  item.append(label, remove);
+
+  return item;
+};
+
+const start = (root: HTMLElement): void => {
   const form = root.querySelector<HTMLFormElement>(".todo__form");
   const input = root.querySelector<HTMLInputElement>(".todo__input");
   const list = root.querySelector<HTMLUListElement>(".todo__list");
@@ -149,46 +169,26 @@ function start(root: HTMLElement): void {
   });
 
   render();
-}
+};
 
-/** Rendering replaces the rows, so focus goes back to the checkbox of the todo with this id */
-function focusTodo(list: HTMLElement, id: string): void {
-  list
-    .querySelector<HTMLInputElement>(`[data-id="${CSS.escape(id)}"] input[type="checkbox"]`)
-    ?.focus();
-}
+const app = document.querySelector<HTMLDivElement>("#app");
 
-interface TodoActions {
-  toggle(id: string): void;
-  remove(id: string): void;
-}
-
-function renderTodo(todo: Todo, actions: TodoActions): HTMLLIElement {
-  const item = document.createElement("li");
-  item.className = todo.done ? "todo__item todo__item--done" : "todo__item";
-  item.dataset.id = todo.id;
-
-  const label = document.createElement("label");
-  const checkbox = document.createElement("input");
-  checkbox.type = "checkbox";
-  checkbox.checked = todo.done;
-  checkbox.addEventListener("change", () => {
-    actions.toggle(todo.id);
-  });
-  const title = document.createElement("span");
-  title.className = "todo__title";
-  title.textContent = todo.title;
-  label.append(checkbox, title);
-
-  const remove = document.createElement("button");
-  remove.type = "button";
-  remove.textContent = "×";
-  remove.setAttribute("aria-label", `Delete ${todo.title}`);
-  remove.addEventListener("click", () => {
-    actions.remove(todo.id);
-  });
-
-  item.append(label, remove);
-
-  return item;
+if (app) {
+  app.innerHTML = `
+    <main class="todo">
+      <h1>AIDD Todo</h1>
+      <form class="todo__form">
+        <input class="todo__input" name="title" aria-label="New todo" placeholder="What needs to be done?" autocomplete="off" />
+        <button type="submit">Add</button>
+      </form>
+      <div class="todo__views" role="group" aria-label="Show">
+        ${TODO_VIEWS.map((view) => `<button type="button" data-view="${view}">${VIEW_LABEL[view]}</button>`).join("")}
+      </div>
+      <ul class="todo__list"></ul>
+      <p class="todo__empty"></p>
+      <button type="button" class="todo__clear" hidden>Clear done</button>
+      <p class="todo__status" role="status"></p>
+    </main>
+  `;
+  start(app);
 }
